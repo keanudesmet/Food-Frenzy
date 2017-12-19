@@ -11,6 +11,7 @@ class Preload extends Phaser.State {
       this.load.audio(`flamethrowerSound`, `assets/sounds/flamethrower.mp3`);
       this.load.audio(`bgm`, `assets/sounds/foodfrenzy.mp3`);
       this.load.audio(`icywind`, `assets/sounds/icywind.mp3`);
+      this.load.audio(`powerup`, `assets/sounds/powerup.wav`);
       //
       // this.load.image(`bg`, `assets/bg.png`);
       //

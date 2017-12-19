@@ -22,23 +22,49 @@ class GameState extends Phaser.State {
     this.setupFire();
     this.setupGlobals();
     this.setupSounds();
-    this.setupArduino();
-    this.setupSpecialGroups();
-    this.setupSpawnSpecials();
     //this.setupExplosions();
     //this.setupText();
     this.cursors = this.input.keyboard.createCursorKeys();
 
-  }
+    this.game.arduinoPlugin.triggerTaco.add(() => {
+      console.log('TRIGGER TACO');
+      this.fireTaco();
+    });
 
+    this.game.arduinoPlugin.triggerFlamethrower.add(() => {
+      console.log('TRIGGER FLAMETHROWER');
+      this.loadFire();
+    });
+
+    this.game.arduinoPlugin.triggerIceCream.add(() => {
+      console.log('TRIGGER ICECREAM');
+      this.fireIcecream();
+    });
+
+    this.game.arduinoPlugin.triggerIcyWind.add(() => {
+      console.log('TRIGGER FREEZE');
+      if (this.pTwoSpecialAvailable == true) {
+        this.freezePlayerOne();
+      }
+    });
+
+    this.game.arduinoPlugin.triggerWalkUp.add(() => {
+      console.log('TRIGGER WALKUP');
+      this.playerTwo.body.velocity.y = -this.playerTwo.data.speed;
+    });
+
+    this.game.arduinoPlugin.triggerWalkDown.add(() => {
+      console.log('TRIGGER WALKUP');
+      this.playerTwo.body.velocity.y = this.playerTwo.data.speed;
+    });
+
+  }
   update() {
 
     //this.sea.tilePosition.y += 0.4;
     this.checkCollisions();
-    if (this.gameEnded === false) {
-      this.processPlayerInput();
-    }
-    //this.yVelocity = this.yVelocity + 2;
+    this.processPlayerInput();
+    this.yVelocity = this.yVelocity + 2;
 
     this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
   }
@@ -58,7 +84,7 @@ class GameState extends Phaser.State {
     if (this.healthPlayer === 1) {
       this.healthPlayer -=1;
       player.kill();
-      this.shutdown();
+      this.gameEnded = true;
     }else {
       this.healthPlayer -=1;
     }
@@ -69,13 +95,12 @@ class GameState extends Phaser.State {
 
   playerTwoHit(player, taco){
     if (this.healthPlayerTwo === 1) {
-      //console.log(this.healthPlayerTwo);
+      console.log(this.healthPlayerTwo);
       this.healthPlayerTwo -=1;
       player.kill();
-      this.shutdown();
     }else {
       this.healthPlayerTwo -=1;
-      //console.log(this.healthPlayerTwo);
+      console.log(this.healthPlayerTwo);
     }
 
     this.updateHealth();
@@ -89,22 +114,6 @@ class GameState extends Phaser.State {
   attackCollide(taco, iceCream) {
     taco.kill();
     iceCream.kill();
-  }
-
-  pickupFlamethrower(player, powerup) {
-    this.pOneSpecialAvailable = true;
-    this.game.arduinoPlugin.redLedBool = true;
-    this.powerupSound.play();
-    powerup.kill();
-    console.log(this.pOneSpecialAvailable);
-  }
-
-  pickupIcywind(player, powerup) {
-    this.pTwoSpecialAvailable = true;
-    this.game.arduinoPlugin.blueLedBool = true;
-    console.log(this.pTwoSpecialAvailable);
-    this.powerupSound.play();
-    powerup.kill();
   }
 
   // setupText(){
@@ -134,122 +143,7 @@ class GameState extends Phaser.State {
   setupSounds() {
     this.tacoHitSound = this.add.audio(`tacoHit`);
     this.flamethrowerSound = this.add.audio(`flamethrowerSound`);
-    this.icyWindSound = this.add.audio(`icywind`);
-    this.powerupSound = this.add.audio(`powerup`);
   }
-
-  setupArduino() {
-    this.game.arduinoPlugin.triggerTaco.add(() => {
-      console.log('TRIGGER TACO');
-      this.fireTaco();
-    });
-
-    this.game.arduinoPlugin.triggerFlamethrower.add(() => {
-      console.log('TRIGGER FLAMETHROWER');
-      if (this.pOneSpecialAvailable === true) {
-        this.loadFire();
-      }
-    });
-
-    this.game.arduinoPlugin.triggerIceCream.add(() => {
-      console.log('TRIGGER ICECREAM');
-      this.fireIcecream();
-    });
-
-    this.game.arduinoPlugin.triggerIcyWind.add(() => {
-      console.log('TRIGGER FREEZE');
-      //console.log(this.pTwoSpecialAvailable);
-      if (this.pTwoSpecialAvailable === true) {
-        this.freezePlayerOne();
-      }
-    });
-
-    this.game.arduinoPlugin.triggerWalkUp.add(() => {
-      console.log('TRIGGER WALKUP');
-      if (this.playerOneFreeze === false) {
-        this.player.body.velocity.y = -this.playerTwo.data.speed;
-      }
-    });
-
-    this.game.arduinoPlugin.triggerWalkDown.add(() => {
-      //console.log(this.playerOneFreeze);
-      if (this.playerOneFreeze === false) {
-        this.player.body.velocity.y = this.playerTwo.data.speed;
-      }
-    });
-
-    this.game.arduinoPlugin.triggerWalkUpTwo.add(() => {
-      console.log('TRIGGER WALKUP2');
-      this.playerTwo.body.velocity.y = -this.playerTwo.data.speed;
-    });
-
-    this.game.arduinoPlugin.triggerWalkDownTwo.add(() => {
-      console.log('TRIGGER WALKUP2');
-      this.playerTwo.body.velocity.y = this.playerTwo.data.speed;
-    });
-  }
-
-  setupSpecialGroups() {
-    this.flamethrowerPickupPool = this.add.group();
-    this.flamethrowerPickupPool.enableBody = true;
-    this.flamethrowerPickupPool.physicsBodyType = Phaser.Physics.ARCADE;
-    this.flamethrowerPickupPool.createMultiple(50, 'bullet');
-    this.flamethrowerPickupPool.setAll('anchor.x', 0.5);
-    this.flamethrowerPickupPool.setAll('anchor.y', 0.5);
-
-    this.icywindPickupPool = this.add.group();
-    this.icywindPickupPool.enableBody = true;
-    this.icywindPickupPool.physicsBodyType = Phaser.Physics.ARCADE;
-    this.icywindPickupPool.createMultiple(50, 'bullet');
-    this.icywindPickupPool.setAll('anchor.x', 0.5);
-    this.icywindPickupPool.setAll('anchor.y', 0.5);
-  }
-
-  setupSpawnSpecials() {
-    this.time.events.add(Phaser.Timer.SECOND * this.game.rnd.integerInRange(7, 15), this.spawnSpecial, this);
-    this.time.events.add(Phaser.Timer.SECOND * this.game.rnd.integerInRange(7, 15), this.spawnSpecialTwo, this);
-    this.time.events.add(Phaser.Timer.SECOND * 15, this.setupSpawnSpecials, this);
-
-  }
-
-  spawnSpecial() {
-    //tacoboi
-    //this.flamethrowerPickup = this.add.sprite(0, this.game.rnd.integerInRange(100, this.world.height - 100), 'bullet');
-
-    if (this.flamethrowerPickupPool.countDead() === 0) {
-      return;
-    }
-
-    const bullet = this.flamethrowerPickupPool.getFirstExists(false);
-    // Reset (revive) the sprite and place it in a new location
-    bullet.reset(0, this.game.rnd.integerInRange(100, this.world.height - 100));
-
-  }
-
-  spawnSpecialTwo() {
-    if (this.icywindPickupPool.countDead() === 0) {
-      return;
-    }
-
-    const bullet = this.icywindPickupPool.getFirstExists(false);
-    // Reset (revive) the sprite and place it in a new location
-    bullet.reset(this.world.width - 190, this.game.rnd.integerInRange(100, this.world.height - 100));
-  }
-
-  render() {
-
-    //this.icywindPickup.debug();
-    //this.flamethrowerPickup.debug();
-    this.game.debug.body(this.player);
-    this.game.debug.body(this.playerTwo);
-
-    //this.game.debug.body(this.flamethrowerPickup);
-
-
-
-
-  }
-
 
   setupPlayer(){
     // this.player = this.add.sprite(100,this.world.height/2, 'player');
@@ -266,7 +160,7 @@ class GameState extends Phaser.State {
     // this.playerTwo.data.speed = 700;
     // this.playerTwo.body.setSize(50, 20, 7, 20);
 
-    this.playerTwo = new Player(this.game,this.world.width - 150, this.world.height/2, 'playerTwo');
+    this.playerTwo = new Player(this.game,this.world.width - 250, this.world.height/2, 'playerTwo');
     this.add.existing(this.playerTwo);
   }
 
@@ -353,9 +247,9 @@ class GameState extends Phaser.State {
     if (this.nextShotAt > this.time.now) {
       return;
     }
-      if (this.tacoPool.countDead() === 0) {
-        return;
-      }
+    if (this.tacoPool.countDead() === 0) {
+      return;
+    }
     if (!this.player.alive || this.nextShotAt > this.time.now) {
       return;
     }
@@ -367,8 +261,8 @@ class GameState extends Phaser.State {
     bullet.body.velocity.x =  1500;
     bullet.body.velocity.y =  -600;
     bullet.body.gravity.y = 1200;
-    //console.log(this.yVelocity);
-    //console.log(bullet.body.x);
+    console.log(this.yVelocity);
+    console.log(bullet.body.x);
 
     let playershoot = this.player.animations.add('playershoot');
     //this.player.animations.play('playershoot', 30, false);
@@ -395,13 +289,9 @@ class GameState extends Phaser.State {
   }
 
   freezePlayerOne() {
-    console.log('froze to death');
     this.playerOneFreeze = true;
     this.pTwoSpecialAvailable = false;
-    this.game.arduinoPlugin.blueLedBool = false;
-    console.log(this.game.arduinoPlugin.blueLedBool);
     //this.showFreezeTimer();
-    this.icyWindSound.play();
     this.time.events.add(Phaser.Timer.SECOND * 1, this.fadeFreeze, this);
     //this.time.events.add(Phaser.Timer.SECOND * 5, this.resetPTwoSpecialAttack, this);
   }
@@ -453,15 +343,13 @@ class GameState extends Phaser.State {
     //this.time.events.add(Phaser.Timer.SECOND * 5, this.resetSpecialAttackTimer, this);
     this.playerOneFreeze = false;
     this.pOneSpecialAvailable = false;
-    this.game.arduinoPlugin.redLedBool = false;
-    //console.log(this.pOneSpecialAvailable);
     this.flamethrowerSound.play();
 
   }
-  //
-  // resetSpecialAttackTimer() {
-  //   this.pOneSpecialAvailable = true;
-  // }
+
+  resetSpecialAttackTimer() {
+    this.pOneSpecialAvailable = true;
+  }
 
   fadeFire() {
     this.firePool.destroy();
@@ -501,17 +389,8 @@ class GameState extends Phaser.State {
     );
 
     this.physics.arcade.overlap(
-        this.player , this.flamethrowerPickupPool, this.pickupFlamethrower, null, this
-    );
-
-    this.physics.arcade.collide(
-        this.playerTwo , this.icywindPickupPool, this.pickupIcywind, null, this
-    );
-
-    this.physics.arcade.overlap(
         this.tacoPool , this.icecreamPool, this.attackCollide, null, this
     );
-
   }
 
   processPlayerInput(){
@@ -587,25 +466,6 @@ class GameState extends Phaser.State {
 
   shutdown() {
     // todo: remove de listeners
-    //this.game.arduinoPlugin.removeAll();
-    //this.game.arduinoPlugin.triggerFlamethrower.remove();
-
-    this.game.arduinoPlugin.triggerFlamethrower.remove(() => {
-      console.log('DELETE FLAMETHROWER');
-    });
-    this.game.arduinoPlugin.triggerIceCream.remove(() => {
-      console.log('DELETE ICECREAM');
-    });
-    this.game.arduinoPlugin.triggerIcyWind.remove(() => {
-      console.log('DELETE FREEZE');
-    });
-    this.game.arduinoPlugin.triggerWalkUp.remove(() => {
-      console.log('DELETE WALKUP');
-    });
-    this.game.arduinoPlugin.triggerWalkDown.remove(() => {
-      console.log('DELETE WALKUP');
-    });
-    this.gameEnded = true;
   }
 
 }

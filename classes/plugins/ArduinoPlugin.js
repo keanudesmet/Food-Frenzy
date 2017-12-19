@@ -1,3 +1,5 @@
+this.game = require('../states/GameState');
+
 const Readable = require('stream').Readable;
 class MyStream extends Readable {
  constructor(opts) {
@@ -30,26 +32,68 @@ class ArduinoPlugin extends Phaser.Plugin {
     this.triggerWalkUpTwo = new Phaser.Signal();
     this.triggerWalkDownTwo = new Phaser.Signal();
 
+    this.walkUpBool = false;
+    this.walkDownBool = false;
+    this.walkUpBoolTwo = false;
+    this.walkDownBoolTwo = false;
+
+    this.blueLedBool = false;
+    this.redLedBool = false;
+
     this.board.on("ready", () => {
       const taco = new five.Button({
-        pin: 7,
-        isPullup: true
-      });
-
-      const flamethrower = new five.Button({
         pin: 6,
         isPullup: true
       });
 
+      const flamethrower = new five.Button({
+        pin: 7,
+        isPullup: true
+      });
+
       const iceCream = new five.Button({
-        pin: 12,
+        pin: 9,
         isPullup: true
       });
 
       const icyWind = new five.Button({
+        pin: 8,
+        isPullup: true
+      });
+
+      const walkUp = new five.Button({
+        pin: 10,
+        isPullup: true
+      });
+
+      const walkDown = new five.Button({
         pin: 11,
         isPullup: true
       });
+
+      const walkUpTwo = new five.Button({
+        pin: 12,
+        isPullup: true
+      });
+
+      const walkDownTwo = new five.Button({
+        pin: 13,
+        isPullup: true
+      });
+
+      const hotAir = new five.Relay({
+        pin: 1,
+        isPullup: true
+      });
+
+      const coldAir = new five.Relay({
+        pin: 2,
+        isPullup: true
+      });
+
+      //this.blueLedTwo = new five.Led(4)
+      this.redLedTwo = new five.Led(3)
+
 
       taco.on("down", (value) => {
         this.triggerTaco.dispatch();
@@ -59,6 +103,7 @@ class ArduinoPlugin extends Phaser.Plugin {
       flamethrower.on("down", (value) => {
         //console.log('flamethrower');
         this.triggerFlamethrower.dispatch();
+        //hotAir.on();
       });
 
       iceCream.on("down", (value) => {
@@ -69,45 +114,118 @@ class ArduinoPlugin extends Phaser.Plugin {
       icyWind.on("down", (value) => {
         console.log('icywind1');
         this.triggerIcyWind.dispatch();
+        //coldAir.on();
       });
 
-      this.joystick = new five.Joystick({
-        //   [ x, y ]
-        pins: ["A0", "A1"]
+      walkUp.on("down", (value) => {
+        this.walkUpBool = true;
       });
 
-      this.joystickTwo = new five.Joystick({
-        //   [ x, y ]
-        pins: ["A2", "A3"]
+      walkUp.on("release", (value) => {
+        console.log('release up');
+        this.walkUpBool = false;
       });
+
+      walkDown.on("down", (value) => {
+        this.walkDownBool = true;
+      });
+
+      walkDown.on("release", (value) => {
+        this.walkDownBool = false;
+      });
+
+      walkUpTwo.on("down", (value) => {
+        this.walkUpBoolTwo = true;
+      });
+
+      walkUpTwo.on("release", (value) => {
+        this.walkUpBoolTwo = false;
+      });
+
+      walkDownTwo.on("down", (value) => {
+        this.walkDownBoolTwo = true;
+      });
+
+      walkDownTwo.on("release", (value) => {
+        this.walkDownBoolTwo = false;
+      });
+
+      //
+      // this.joystick = new five.Joystick({
+      //   //   [ x, y ]
+      //   pins: ["A0", "A1"]
+      // });
+      //
+      // this.joystickTwo = new five.Joystick({
+      //   //   [ x, y ]
+      //   pins: ["A2", "A3"]
+      // });
 
     });
   }
 
   update() {
-    if (this.joystick !== undefined) {
 
-      if (this.joystick.y < -0.7) {
-        console.log('omhoog');
-        this.triggerWalkUp.dispatch();
-      }
-      if (this.joystick.y > 0.7) {
-        console.log('beneden');
-        this.triggerWalkDown.dispatch();
-      }
-
-      if (this.joystickTwo.y < -0.7) {
-        console.log('omhoog');
-        this.triggerWalkUpTwo.dispatch();
-      }
-      if (this.joystickTwo.y > 0.7) {
-        console.log('beneden');
-        this.triggerWalkDownTwo.dispatch();
-      }
-
-    } else {
-      console.log('BOARD NOT LOADED');
+    if (this.walkUpBool === true) {
+      this.triggerWalkUp.dispatch();
     }
+    if (this.walkDownBool === true) {
+      this.triggerWalkDown.dispatch();
+    }
+    if (this.walkUpBoolTwo === true) {
+      this.triggerWalkUpTwo.dispatch();
+    }
+    if (this.walkDownBoolTwo === true) {
+      this.triggerWalkDownTwo.dispatch();
+    }
+
+    if(this.board.isReady === true) {
+
+      // if (this.blueLedBool === true) {
+      //   console.log(this.blueLedBool);
+      //   console.log('BLAUW LAMPJE AAN FFS');
+      //   this.blueLedTwo.on();
+      // }
+      // if(this.blueLedBool === false) {
+      //   console.log(this.blueLedBool);
+      //   this.blueLedTwo.off();
+      // }
+
+      if (this.redLedBool === true) {
+        this.redLedTwo.on();
+      }
+      if(this.redLedBool === false) {
+        this.redLedTwo.off();
+      }
+    };
+
+
+
+
+    //
+    // if (this.joystick !== undefined) {
+    //
+    //   if (this.joystick.y < -0.7) {
+    //     console.log('omhoog');
+    //     this.triggerWalkUp.dispatch();
+    //   }
+    //   if (this.joystick.y > 0.7) {
+    //     console.log('beneden');
+    //     this.triggerWalkDown.dispatch();
+    //   }
+    //
+    //   if (this.joystickTwo.y < -0.7) {
+    //     console.log('omhoog2');
+    //     this.triggerWalkUpTwo.dispatch();
+    //   }
+    //   if (this.joystickTwo.y > 0.7) {
+    //     console.log('beneden2');
+    //     this.triggerWalkDownTwo.dispatch();
+    //   }
+    //
+    // } else {
+    //   console.log('BOARD NOT LOADED');
+    // }
 
 
   }
