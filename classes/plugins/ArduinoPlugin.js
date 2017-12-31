@@ -37,8 +37,8 @@ class ArduinoPlugin extends Phaser.Plugin {
     this.walkUpBoolTwo = false;
     this.walkDownBoolTwo = false;
 
-    this.blueLedBool = false;
-    this.redLedBool = false;
+    this.blueLedBool = true;
+    this.redLedBool = true;
 
     this.board.on("ready", () => {
       const taco = new five.Button({
@@ -81,17 +81,17 @@ class ArduinoPlugin extends Phaser.Plugin {
         isPullup: true
       });
 
-      const hotAir = new five.Relay({
-        pin: 1,
-        isPullup: true
-      });
+      // const hotAir = new five.Relay({
+      //   pin: 1,
+      //   isPullup: true
+      // });
+      //
+      // const coldAir = new five.Relay({
+      //   pin: 2,
+      //   isPullup: true
+      // });
 
-      const coldAir = new five.Relay({
-        pin: 2,
-        isPullup: true
-      });
-
-      //this.blueLedTwo = new five.Led(4)
+      this.blueLedTwo = new five.Led(4)
       this.redLedTwo = new five.Led(3)
 
 
@@ -181,22 +181,24 @@ class ArduinoPlugin extends Phaser.Plugin {
 
     if(this.board.isReady === true) {
 
-      // if (this.blueLedBool === true) {
-      //   console.log(this.blueLedBool);
-      //   console.log('BLAUW LAMPJE AAN FFS');
-      //   this.blueLedTwo.on();
-      // }
-      // if(this.blueLedBool === false) {
-      //   console.log(this.blueLedBool);
-      //   this.blueLedTwo.off();
-      // }
-
       if (this.redLedBool === true) {
+        console.log('red', this.redLedBool);
         this.redLedTwo.on();
       }
       if(this.redLedBool === false) {
+        console.log('red', this.redLedBool);
         this.redLedTwo.off();
       }
+
+      if (this.blueLedBool === true) {
+        console.log('blue', this.blueLedBool);
+        this.blueLedTwo.on();
+      }
+      if(this.blueLedBool === false) {
+        console.log('blue', this.blueLedBool);
+        this.blueLedTwo.off();
+      }
+
     };
 
 

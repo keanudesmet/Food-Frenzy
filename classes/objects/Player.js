@@ -5,11 +5,8 @@ class Player extends Phaser.Sprite {
     this.game.physics.arcade.enableBody(this);
     this.body.collideWorldBounds = true;
     this.data.speed = 1000;
-    this.body.setSize(50, 20, 7, 20);
     this.anchor.setTo(0.5, 0.5);
 
-    let stand = this.animations.add('stand');
-    this.animations.play('stand', 30, true);
   }
   update(){
 

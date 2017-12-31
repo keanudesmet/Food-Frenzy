@@ -33,12 +33,17 @@ class GameState extends Phaser.State {
 
   update() {
 
-    //this.sea.tilePosition.y += 0.4;
     this.checkCollisions();
     if (this.gameEnded === false) {
       this.processPlayerInput();
     }
-    //this.yVelocity = this.yVelocity + 2;
+
+    if ((this.player.body.velocity.y === 0) && (this.shootAnim.isPlaying === false) && (this.fireAnim.isPlaying === false)) {
+      this.player.animations.play('stand');
+    }
+    if ((this.playerTwo.body.velocity.y === 0) && (this.shootAnimTwo.isPlaying === false)) {
+      this.playerTwo.animations.play('stand');
+    }
 
     this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
   }
@@ -48,12 +53,7 @@ class GameState extends Phaser.State {
     // this.game.debug.body(this.enemy);
     //this.game.debug.body(this.player);
   }
-  // enemyHit(bullet, enemy) {
-  //   bullet.kill();
-  //   enemy.kill();
-  //   this.explode(enemy);
-  //   //this.addToScore(100);
-  // }
+
   playerHit(player, icecream){
     if (this.healthPlayer === 1) {
       this.healthPlayer -=1;
@@ -64,6 +64,10 @@ class GameState extends Phaser.State {
     }
     this.updateHealth();
     icecream.kill();
+
+    this.p1Immume = true;
+    this.immumeEffectP1();
+    this.time.events.add(Phaser.Timer.SECOND * 3, this.fadeImmumeP1, this);
     //this.explode(player);
   }
 
@@ -80,10 +84,66 @@ class GameState extends Phaser.State {
 
     this.updateHealth();
     this.tacoHitSound.play();
+    this.p2Immume = true;
+    this.immumeEffectP2();
+    this.time.events.add(Phaser.Timer.SECOND * 3, this.fadeImmumeP2, this);
 
     taco.kill();
+
     //this.explode(player);
     //   this.addToScore(' GAME OVEUR');
+  }
+
+  playerTwoFireHit(player, fire){
+    if (this.healthPlayerTwo === 1) {
+      this.healthPlayerTwo -=1;
+      player.kill();
+      this.shutdown();
+    }else {
+      this.healthPlayerTwo -=1;
+    }
+
+    this.updateHealth();
+    this.tacoHitSound.play();
+
+    this.p2Immume = true;
+    this.immumeEffectP2();
+    this.time.events.add(Phaser.Timer.SECOND * 3, this.fadeImmumeP2, this);
+
+  }
+
+  fadeImmumeP1() {
+    this.p1Immume = false;
+    console.log(this.p1Immume);
+  }
+
+  immumeEffectP1() {
+    if (this.p1Immume === true) {
+      this.player.alpha = 0.5;
+      this.time.events.add(Phaser.Timer.SECOND * 0.1, this.fadeInvisibilityP1, this);
+    }
+  }
+
+  fadeInvisibilityP1() {
+    this.player.alpha = 1;
+    this.time.events.add(Phaser.Timer.SECOND * 0.1, this.immumeEffectP1, this);
+  }
+
+  fadeImmumeP2() {
+    this.p2Immume = false;
+    console.log(this.p2Immume);
+  }
+
+  immumeEffectP2() {
+    if (this.p2Immume === true) {
+      this.playerTwo.alpha = 0.5;
+      this.time.events.add(Phaser.Timer.SECOND * 0.1, this.fadeInvisibilityP2, this);
+    }
+  }
+
+  fadeInvisibilityP2() {
+    this.playerTwo.alpha = 1;
+    this.time.events.add(Phaser.Timer.SECOND * 0.1, this.immumeEffectP2, this);
   }
 
   attackCollide(taco, iceCream) {
@@ -120,15 +180,52 @@ class GameState extends Phaser.State {
 
   setupBackground(){
     //this.sea = this.add.tileSprite(0, 0, this.world.width, this.world.height, `sea`);
-    this.bg = this.add.sprite(0,0, 'bg2');
+    this.bg = this.add.sprite(this.world.width/2,this.world.height/2, 'bg2');
+    this.bg.anchor.setTo(0.5,0.5);
   }
 
   setupGlobals(){
     this.pOneSpecialAvailable = true;
     this.pTwoSpecialAvailable = true;
-    this.gameEnded = false;
+    this.gameEnded = true;
     this.playerOneFreeze = false;
     this.yVelocity = 0;
+
+    this.p1Immume = false;
+    this.p2Immume = false;
+
+    this.setupCountdown();
+  }
+
+  setupCountdown() {
+    this.counter = 0;
+    if (this.counter === 0) {
+      this.scoreText = this.add.text(this.world.width/2, this.world.height/2, `3`,{font: `100px KenFuture`, fill: `#000`, align: `right`});
+      this.scoreText.anchor.setTo(0.5, 0.5);
+    }
+    this.countdownTimer = this.game.time.create(false);
+    this.countdownTimer.loop(1000, this.updateCounter, this);
+    this.countdownTimer.start();
+  }
+
+  updateCounter() {
+    this.counter++;
+
+    if (this.counter === 1) {
+      this.scoreText.text = `2`;
+    }
+    if (this.counter === 2) {
+      this.scoreText.text = `1`;
+    }
+    if (this.counter === 3) {
+      this.scoreText.text = `GOOOOO!`;
+    }
+    if (this.counter === 4) {
+      this.scoreText.destroy();
+      this.countdownTimer.stop();
+      this.gameEnded = false;
+    }
+
   }
 
   setupSounds() {
@@ -139,9 +236,11 @@ class GameState extends Phaser.State {
   }
 
   setupArduino() {
+
     this.game.arduinoPlugin.triggerTaco.add(() => {
       console.log('TRIGGER TACO');
       this.fireTaco();
+      this.player.animations.play(`shoot`);
     });
 
     this.game.arduinoPlugin.triggerFlamethrower.add(() => {
@@ -154,6 +253,7 @@ class GameState extends Phaser.State {
     this.game.arduinoPlugin.triggerIceCream.add(() => {
       console.log('TRIGGER ICECREAM');
       this.fireIcecream();
+      this.playerTwo.animations.play(`shoot`);
     });
 
     this.game.arduinoPlugin.triggerIcyWind.add(() => {
@@ -167,25 +267,37 @@ class GameState extends Phaser.State {
     this.game.arduinoPlugin.triggerWalkUp.add(() => {
       console.log('TRIGGER WALKUP');
       if (this.playerOneFreeze === false) {
-        this.player.body.velocity.y = -this.playerTwo.data.speed;
+        this.player.body.velocity.y = -this.player.data.speed;
       }
     });
 
     this.game.arduinoPlugin.triggerWalkDown.add(() => {
       //console.log(this.playerOneFreeze);
       if (this.playerOneFreeze === false) {
-        this.player.body.velocity.y = this.playerTwo.data.speed;
+        this.player.body.velocity.y = this.player.data.speed;
       }
     });
 
     this.game.arduinoPlugin.triggerWalkUpTwo.add(() => {
       console.log('TRIGGER WALKUP2');
       this.playerTwo.body.velocity.y = -this.playerTwo.data.speed;
+      if (this.shootAnimTwo.isPlaying)
+        {
+          return;
+        } else {
+          this.playerTwo.animations.play(`walk`);
+        }
     });
 
     this.game.arduinoPlugin.triggerWalkDownTwo.add(() => {
       console.log('TRIGGER WALKUP2');
       this.playerTwo.body.velocity.y = this.playerTwo.data.speed;
+      if (this.shootAnimTwo.isPlaying)
+        {
+          return;
+        } else {
+          this.playerTwo.animations.play(`walk`);
+        }
     });
   }
 
@@ -193,14 +305,14 @@ class GameState extends Phaser.State {
     this.flamethrowerPickupPool = this.add.group();
     this.flamethrowerPickupPool.enableBody = true;
     this.flamethrowerPickupPool.physicsBodyType = Phaser.Physics.ARCADE;
-    this.flamethrowerPickupPool.createMultiple(50, 'bullet');
+    this.flamethrowerPickupPool.createMultiple(50, 'jalapeno');
     this.flamethrowerPickupPool.setAll('anchor.x', 0.5);
     this.flamethrowerPickupPool.setAll('anchor.y', 0.5);
 
     this.icywindPickupPool = this.add.group();
     this.icywindPickupPool.enableBody = true;
     this.icywindPickupPool.physicsBodyType = Phaser.Physics.ARCADE;
-    this.icywindPickupPool.createMultiple(50, 'bullet');
+    this.icywindPickupPool.createMultiple(50, 'icecream');
     this.icywindPickupPool.setAll('anchor.x', 0.5);
     this.icywindPickupPool.setAll('anchor.y', 0.5);
   }
@@ -222,7 +334,7 @@ class GameState extends Phaser.State {
 
     const bullet = this.flamethrowerPickupPool.getFirstExists(false);
     // Reset (revive) the sprite and place it in a new location
-    bullet.reset(0, this.game.rnd.integerInRange(100, this.world.height - 100));
+    bullet.reset(100, this.game.rnd.integerInRange(100, this.world.height - 100));
 
   }
 
@@ -245,9 +357,6 @@ class GameState extends Phaser.State {
 
     //this.game.debug.body(this.flamethrowerPickup);
 
-
-
-
   }
 
 
@@ -257,16 +366,29 @@ class GameState extends Phaser.State {
     // this.player.data.speed = 1000;
     // this.player.body.setSize(50, 20, 7, 20);
 
-    this.player = new Player(this.game, 100, this.world.height/2, 'player');
+    this.player = new Player(this.game, 100, this.world.height/2, 'tico-atlas');
+    this.player.body.setSize(120, 220, 50, 100);
+    this.player.scale.setTo(0.6, 0.6);
+
+    this.player.animations.add(`stand`, Phaser.Animation.generateFrameNames(`stand`, 1, 8, `.png`, 1), 25, true, false);
+    this.player.animations.add(`walk`, Phaser.Animation.generateFrameNames(`walk`, 1, 7, `.png`, 1), 25, true, false);
+    this.shootAnim = this.player.animations.add(`shoot`, Phaser.Animation.generateFrameNames(`shoot`, 1, 7, `.png`, 1), 25, false, false);
+    this.fireAnim = this.player.animations.add(`fire`, Phaser.Animation.generateFrameNames(`fire`, 1, 13, `.png`, 1), 25, false, false);
+
+    this.player.animations.play(`stand`);
+
     this.add.existing(this.player);
 
-    // this.playerTwo = this.add.sprite(this.world.width - 100, this.world.height/2, 'playerTwo');
-    // this.playerTwo.anchor.setTo(0.5, 0.5);
-    // this.physics.enable(this.playerTwo, Phaser.Physics.ARCADE);
-    // this.playerTwo.data.speed = 700;
-    // this.playerTwo.body.setSize(50, 20, 7, 20);
 
-    this.playerTwo = new Player(this.game,this.world.width - 150, this.world.height/2, 'playerTwo');
+    this.playerTwo = new Player(this.game,this.world.width - 150, this.world.height/2, 'tutti-atlas');
+    this.playerTwo.body.setSize(120, 220, 50, 100);
+    this.playerTwo.scale.setTo(0.6, 0.6);
+
+    this.playerTwo.animations.add(`stand`, Phaser.Animation.generateFrameNames(`stand`, 1, 8, `.png`, 1), 25, true, false);
+    this.playerTwo.animations.add(`walk`, Phaser.Animation.generateFrameNames(`walk`, 1, 7, `.png`, 1), 25, true, false);
+    this.shootAnimTwo = this.playerTwo.animations.add(`shoot`, Phaser.Animation.generateFrameNames(`shoot`, 1, 7, `.png`, 1), 35, false, false);
+    this.playerTwo.animations.play(`stand`);
+
     this.add.existing(this.playerTwo);
   }
 
@@ -279,11 +401,11 @@ class GameState extends Phaser.State {
 
     for (let i = 0; i < this.healthPlayer; i++) {
       //this.live = this.add.sprite(10 + i*120,10, 'heart');
-      this.healthBar.create(10 + i*120,10, 'heart');
+      this.healthBar.create(50 + i*120,50, 'heart');
     }
 
     for (let i = 0; i < this.healthPlayerTwo; i++) {
-      this.healthBarTwo.create(this.world.width - 120 - i*120,10, 'heart');
+      this.healthBarTwo.create(this.world.width - 160 - i*120,50, 'heart');
     }
 
   }
@@ -296,11 +418,11 @@ class GameState extends Phaser.State {
     this.healthBarTwo = this.add.group();
 
     for (let i = 0; i < this.healthPlayer; i++) {
-      this.healthBar.create(10 + i*120,10, 'heart');
+      this.healthBar.create(50 + i*120,50, 'heart');
     }
 
     for (let i = 0; i < this.healthPlayerTwo; i++) {
-      this.healthBarTwo.create(this.world.width - 120 - i*120,10, 'heart');
+      this.healthBarTwo.create(this.world.width - 160 - i*120,50, 'heart');
     }
 
 
@@ -338,7 +460,7 @@ class GameState extends Phaser.State {
     this.icecreamPool.enableBody = true;
     this.icecreamPool.physicsBodyType = Phaser.Physics.ARCADE;
     // Add 100 'bullet' sprites in the group.
-    this.icecreamPool.createMultiple(100, 'bullet');
+    this.icecreamPool.createMultiple(100, 'icecream-fire');
     // By default this uses the first frame of the sprite sheet and
     // sets the initial state as non-existing (i.e. killed/dead)
 
@@ -370,8 +492,11 @@ class GameState extends Phaser.State {
     //console.log(this.yVelocity);
     //console.log(bullet.body.x);
 
-    let playershoot = this.player.animations.add('playershoot');
+    //let playershoot = this.player.animations.add('playershoot');
     //this.player.animations.play('playershoot', 30, false);
+
+    //this.player.animations.add(`shoot`, [`shoot2.png`], 0, false, false);
+    this.player.animations.play(`shoot`);
   }
 
   fireIcecream() {
@@ -388,10 +513,12 @@ class GameState extends Phaser.State {
     // Find the first dead bullet in the pool
     const bullet = this.icecreamPool.getFirstExists(false);
     // Reset (revive) the sprite and place it in a new location
-    bullet.reset(this.playerTwo.x, this.playerTwo.y - 20);
+    bullet.reset(this.playerTwo.x - 100, this.playerTwo.y - 20);
     bullet.body.velocity.x =  -1500;
     bullet.body.velocity.y =  -600;
     bullet.body.gravity.y = 1200;
+
+    this.playerTwo.animations.play('shoot');
   }
 
   freezePlayerOne() {
@@ -418,39 +545,35 @@ class GameState extends Phaser.State {
     this.nextFireAt = 0;
     this.fireDelay = 5000;
 
-    this.firePool = this.add.group();
-    this.firePool.enableBody = true;
-    this.firePool.physicsBodyType = Phaser.Physics.ARCADE;
-    // Add 100 'bullet' sprites in the group.
-    this.firePool.createMultiple(200, 'bullet');
-    this.firePool.setAll('anchor.x', 0.5);
-    this.firePool.setAll('anchor.y', 0.5);
-    // Automatically kill the bullet sprites when they go out of bounds
-    this.firePool.setAll('outOfBoundsKill', true);
-    this.firePool.setAll('checkWorldBounds', true);
+    // this.firePool = this.add.group();
+    // this.firePool.enableBody = true;
+    // this.firePool.physicsBodyType = Phaser.Physics.ARCADE;
+    // // Add 100 'bullet' sprites in the group.
+    // this.firePool.createMultiple(200, 'bullet');
+    // this.firePool.setAll('anchor.x', 0.5);
+    // this.firePool.setAll('anchor.y', 0.5);
+    // // Automatically kill the bullet sprites when they go out of bounds
+    // this.firePool.setAll('outOfBoundsKill', true);
+    // this.firePool.setAll('checkWorldBounds', true);
+
+
   }
 
   loadFire() {
     this.playerOneFreeze = true;
-    this.time.events.add(Phaser.Timer.SECOND * 0.5, this.breathFire, this);
+    this.time.events.add(Phaser.Timer.SECOND * 0.4, this.breathFire, this);
+    this.player.animations.play(`fire`);
   }
 
   breathFire() {
-    if (this.nextFireAt > this.time.now) {
-      return;
-    }
-    if (this.firePool.countDead() === 0) {
-      return;
-    }
 
-    this.nextFireAt = this.time.now + this.fireDelay;
+    this.firePool = this.add.sprite(this.player.x + 35,this.player.y - 115, 'flamethrower');
+    this.firePool.animations.add('flamethrower');
+    this.firePool.animations.play('flamethrower', 30, true);
+    this.game.physics.arcade.enable(this.firePool);
 
-    for (var i = 0; i < 30; i++) {
-      const bullet = this.firePool.getFirstExists(false);
-      bullet.reset(this.player.x + i*60, this.player.y);
-    }
-      this.time.events.add(Phaser.Timer.SECOND * 1, this.fadeFire, this);
-    //this.time.events.add(Phaser.Timer.SECOND * 5, this.resetSpecialAttackTimer, this);
+    this.time.events.add(Phaser.Timer.SECOND * 1, this.fadeFire, this);
+
     this.playerOneFreeze = false;
     this.pOneSpecialAvailable = false;
     this.game.arduinoPlugin.redLedBool = false;
@@ -458,14 +581,11 @@ class GameState extends Phaser.State {
     this.flamethrowerSound.play();
 
   }
-  //
-  // resetSpecialAttackTimer() {
-  //   this.pOneSpecialAvailable = true;
-  // }
 
   fadeFire() {
     this.firePool.destroy();
     this.setupFire();
+    this.player.animations.play('stand');
   }
 
   // setupExplosions(){
@@ -489,16 +609,26 @@ class GameState extends Phaser.State {
   //   explosion.body.velocity.y = sprite.body.velocity.y;
   // }
   checkCollisions(){
-    this.physics.arcade.overlap(
-        this.playerTwo , this.tacoPool, this.playerTwoHit, null, this
-    );
-    this.physics.arcade.overlap(
-        this.player , this.icecreamPool, this.playerHit, null, this
-    );
 
-    this.physics.arcade.overlap(
-        this.playerTwo , this.firePool, this.playerTwoHit, null, this
-    );
+    if (this.p2Immume === false) {
+
+      this.physics.arcade.overlap(
+          this.playerTwo , this.tacoPool, this.playerTwoHit, null, this
+      );
+
+      this.physics.arcade.collide(
+          this.playerTwo , this.firePool, this.playerTwoFireHit, null, this
+      );
+
+    }
+
+    if (this.p1Immume === false) {
+
+      this.physics.arcade.overlap(
+          this.player , this.icecreamPool, this.playerHit, null, this
+      );
+
+    }
 
     this.physics.arcade.overlap(
         this.player , this.flamethrowerPickupPool, this.pickupFlamethrower, null, this
@@ -531,8 +661,20 @@ class GameState extends Phaser.State {
 
     if (this.cursors.up.isDown) {
       this.playerTwo.body.velocity.y = -this.playerTwo.data.speed;
+      if (this.shootAnimTwo.isPlaying)
+        {
+          return;
+        } else {
+          this.playerTwo.animations.play(`walk`);
+        }
     } else if (this.cursors.down.isDown) {
       this.playerTwo.body.velocity.y = this.playerTwo.data.speed;
+      if (this.shootAnimTwo.isPlaying)
+        {
+          return;
+        } else {
+          this.playerTwo.animations.play(`walk`);
+        }
     }
 
     if (this.input.keyboard.isDown(Phaser.Keyboard.M))
@@ -567,8 +709,21 @@ class GameState extends Phaser.State {
 
       if (this.input.keyboard.isDown(Phaser.Keyboard.Z)) {
         this.player.body.velocity.y = -this.player.data.speed;
+        if (this.shootAnim.isPlaying)
+          {
+            return;
+          } else {
+            this.player.animations.play(`walk`);
+          }
+
       } else if (this.input.keyboard.isDown(Phaser.Keyboard.S)) {
         this.player.body.velocity.y = this.player.data.speed;
+        if (this.shootAnim.isPlaying)
+          {
+            return;
+          } else {
+            this.player.animations.play(`walk`);
+          }
       }
 
       if (this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
@@ -590,22 +745,36 @@ class GameState extends Phaser.State {
     //this.game.arduinoPlugin.removeAll();
     //this.game.arduinoPlugin.triggerFlamethrower.remove();
 
-    this.game.arduinoPlugin.triggerFlamethrower.remove(() => {
-      console.log('DELETE FLAMETHROWER');
-    });
-    this.game.arduinoPlugin.triggerIceCream.remove(() => {
-      console.log('DELETE ICECREAM');
-    });
-    this.game.arduinoPlugin.triggerIcyWind.remove(() => {
-      console.log('DELETE FREEZE');
-    });
-    this.game.arduinoPlugin.triggerWalkUp.remove(() => {
-      console.log('DELETE WALKUP');
-    });
-    this.game.arduinoPlugin.triggerWalkDown.remove(() => {
-      console.log('DELETE WALKUP');
-    });
+    this.game.arduinoPlugin.triggerFlamethrower.remove(() => {});
+    this.game.arduinoPlugin.triggerIceCream.remove(() => {});
+    this.game.arduinoPlugin.triggerIcyWind.remove(() => {});
+    this.game.arduinoPlugin.triggerWalkUp.remove(() => {});
+    this.game.arduinoPlugin.triggerWalkDown.remove(() => {});
+    this.game.arduinoPlugin.triggerWalkUpTwo.remove(() => {});
+    this.game.arduinoPlugin.triggerWalkDownTwo.remove(() => {});
     this.gameEnded = true;
+
+    this.flamethrowerPickupPool.destroy();
+    this.icywindPickupPool.destroy();
+
+    this.setupPlay();
+  }
+
+  setupPlay() {
+    this.start = this.add.button(this.game.width/2, 709, 'play', this.startClick, this);
+    this.start.anchor.setTo(0.5,0.5);
+    if (this.healthPlayer === 0) {
+        console.log('ICEBOI WINZ');
+    }
+    if (this.healthPlayerTwo === 0) {
+        console.log('TACOBOI WINZ');
+    }
+  }
+  startClick() {
+    //this.bgSound.play();
+    this.setupGlobals();
+    this.setupSpecialGroups();
+    this.state.start(`GameState`);
   }
 
 }

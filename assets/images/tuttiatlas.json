@@ -1,0 +1,188 @@
+{"frames": {
+
+"shoot1.png":
+{
+	"frame": {"x":0,"y":0,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"shoot2.png":
+{
+	"frame": {"x":250,"y":0,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"shoot3.png":
+{
+	"frame": {"x":500,"y":0,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"shoot4.png":
+{
+	"frame": {"x":750,"y":0,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"shoot5.png":
+{
+	"frame": {"x":1000,"y":0,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"shoot6.png":
+{
+	"frame": {"x":1250,"y":0,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"shoot7.png":
+{
+	"frame": {"x":1500,"y":0,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"stand1.png":
+{
+	"frame": {"x":1750,"y":0,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"stand2.png":
+{
+	"frame": {"x":0,"y":335,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"stand3.png":
+{
+	"frame": {"x":250,"y":335,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"stand4.png":
+{
+	"frame": {"x":500,"y":335,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"stand5.png":
+{
+	"frame": {"x":750,"y":335,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"stand6.png":
+{
+	"frame": {"x":1000,"y":335,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"stand7.png":
+{
+	"frame": {"x":1250,"y":335,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"stand8.png":
+{
+	"frame": {"x":1500,"y":335,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"walk1.png":
+{
+	"frame": {"x":1750,"y":335,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"walk2.png":
+{
+	"frame": {"x":0,"y":670,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"walk3.png":
+{
+	"frame": {"x":250,"y":670,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"walk4.png":
+{
+	"frame": {"x":500,"y":670,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"walk5.png":
+{
+	"frame": {"x":750,"y":670,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"walk6.png":
+{
+	"frame": {"x":1000,"y":670,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+},
+"walk7.png":
+{
+	"frame": {"x":1250,"y":670,"w":250,"h":335},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":335},
+	"sourceSize": {"w":250,"h":335}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "tuttiatlas.png",
+	"format": "RGBA8888",
+	"size": {"w":2000,"h":1005},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:6dda456913c6f743c506d5c58205a8e0:cc53a018bf840d3482efc3ac8de4d324:85c6dd40142edf43e44ede0ca2d51b3f$"
+}
+}
