@@ -40,6 +40,9 @@ class ArduinoPlugin extends Phaser.Plugin {
     this.blueLedBool = true;
     this.redLedBool = true;
 
+    this.hotAirBool = false;
+    this.coldAirBool = false;
+
     this.board.on("ready", () => {
       const taco = new five.Button({
         pin: 6,
@@ -81,15 +84,8 @@ class ArduinoPlugin extends Phaser.Plugin {
         isPullup: true
       });
 
-      // const hotAir = new five.Relay({
-      //   pin: 1,
-      //   isPullup: true
-      // });
-      //
-      // const coldAir = new five.Relay({
-      //   pin: 2,
-      //   isPullup: true
-      // });
+      this.hotAir = new five.Led(14);
+      this.coldAir = new five.Led(15);
 
       this.blueLedTwo = new five.Led(4)
       this.redLedTwo = new five.Led(3)
@@ -101,9 +97,8 @@ class ArduinoPlugin extends Phaser.Plugin {
       });
 
       flamethrower.on("down", (value) => {
-        //console.log('flamethrower');
+        console.log('flamethrower');
         this.triggerFlamethrower.dispatch();
-        //hotAir.on();
       });
 
       iceCream.on("down", (value) => {
@@ -114,7 +109,6 @@ class ArduinoPlugin extends Phaser.Plugin {
       icyWind.on("down", (value) => {
         console.log('icywind1');
         this.triggerIcyWind.dispatch();
-        //coldAir.on();
       });
 
       walkUp.on("down", (value) => {
@@ -182,21 +176,42 @@ class ArduinoPlugin extends Phaser.Plugin {
     if(this.board.isReady === true) {
 
       if (this.redLedBool === true) {
-        console.log('red', this.redLedBool);
+        //console.log('red', this.redLedBool);
         this.redLedTwo.on();
       }
       if(this.redLedBool === false) {
-        console.log('red', this.redLedBool);
+        //console.log('red', this.redLedBool);
         this.redLedTwo.off();
       }
 
       if (this.blueLedBool === true) {
-        console.log('blue', this.blueLedBool);
+        //console.log('blue', this.blueLedBool);
         this.blueLedTwo.on();
       }
       if(this.blueLedBool === false) {
-        console.log('blue', this.blueLedBool);
+        //console.log('blue', this.blueLedBool);
         this.blueLedTwo.off();
+      }
+
+
+
+      if (this.hotAirBool === true) {
+        console.log(`bam`);
+        this.hotAir.on();
+      }
+      if(this.hotAirBool === false) {
+        console.log(`flop`);
+
+        this.hotAir.off();
+      }
+
+      if (this.coldAirBool === true) {
+        console.log(`bam`);
+        this.coldAir.on();
+      }
+      if(this.coldAirBool === false) {
+        console.log(`bam`);
+        this.coldAir.off();
       }
 
     };

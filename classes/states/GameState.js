@@ -522,6 +522,8 @@ class GameState extends Phaser.State {
   }
 
   freezePlayerOne() {
+    this.game.arduinoPlugin.coldAirBool = true;
+    console.log(this.game.arduinoPlugin.coldAirBool);
     console.log('froze to death');
     this.playerOneFreeze = true;
     this.pTwoSpecialAvailable = false;
@@ -538,6 +540,7 @@ class GameState extends Phaser.State {
   // }
 
   fadeFreeze() {
+    this.game.arduinoPlugin.coldAirBool = false;
     this.playerOneFreeze = false;
   }
 
@@ -566,7 +569,7 @@ class GameState extends Phaser.State {
   }
 
   breathFire() {
-
+    this.game.arduinoPlugin.hotAirBool = true;
     this.firePool = this.add.sprite(this.player.x + 35,this.player.y - 115, 'flamethrower');
     this.firePool.animations.add('flamethrower');
     this.firePool.animations.play('flamethrower', 30, true);
@@ -583,6 +586,7 @@ class GameState extends Phaser.State {
   }
 
   fadeFire() {
+    this.game.arduinoPlugin.hotAirBool = false;
     this.firePool.destroy();
     this.setupFire();
     this.player.animations.play('stand');
