@@ -62,6 +62,7 @@ class GameState extends Phaser.State {
     this.p1Immume = true;
     this.immumeEffectP1();
     this.time.events.add(Phaser.Timer.SECOND * 3, this.fadeImmumeP1, this);
+    this.tacoHitSound.play();
     //this.explode(player);
   }
 
@@ -161,19 +162,7 @@ class GameState extends Phaser.State {
     powerup.kill();
   }
 
-  // setupText(){
-  //   this.score = 0;
-  //   this.scoreText = this.add.text(this.game.width / 2, 30, '' + this.score,
-  //   { font: '20px monospace', fill: '#fff', align: 'center' } );
-  //   this.scoreText.anchor.setTo(0.5, 0.5);
-  // }
-  // addToScore(score) {
-  //   this.score += score;
-  //   this.scoreText.text = this.score;
-  // }
-
   setupBackground(){
-    //this.sea = this.add.tileSprite(0, 0, this.world.width, this.world.height, `sea`);
     this.bg = this.add.sprite(this.world.width/2,this.world.height/2, 'bg2');
     this.bg.anchor.setTo(0.5,0.5);
   }
@@ -194,7 +183,7 @@ class GameState extends Phaser.State {
   setupCountdown() {
     this.counter = 0;
     if (this.counter === 0) {
-      this.scoreText = this.add.text(this.world.width/2, this.world.height/2, `3`,{font: `100px KenFuture`, fill: `#000`, align: `right`});
+      this.scoreText = this.add.text(this.world.width/2, this.world.height/2, `3`,{font: `200px Cubano`, fill: `#FFFFFF`, align: `center`});
       this.scoreText.anchor.setTo(0.5, 0.5);
     }
     this.countdownTimer = this.game.time.create(false);
@@ -212,7 +201,7 @@ class GameState extends Phaser.State {
       this.scoreText.text = `1`;
     }
     if (this.counter === 3) {
-      this.scoreText.text = `GOOOOO!`;
+      this.scoreText.text = `GOOO!`;
     }
     if (this.counter === 4) {
       this.scoreText.destroy();
@@ -227,6 +216,8 @@ class GameState extends Phaser.State {
     this.flamethrowerSound = this.add.audio(`flamethrowerSound`);
     this.icyWindSound = this.add.audio(`icywind`);
     this.powerupSound = this.add.audio(`powerup`);
+    this.bgSound = this.add.audio(`bgm`);
+    this.bgSound.play();
   }
 
   setupArduino() {
@@ -331,8 +322,6 @@ class GameState extends Phaser.State {
   }
 
   spawnSpecial() {
-    //tacoboi
-    //this.flamethrowerPickup = this.add.sprite(0, this.game.rnd.integerInRange(100, this.world.height - 100), 'bullet');
 
     if (this.flamethrowerPickupPool.countDead() === 0) {
       return;
@@ -367,10 +356,6 @@ class GameState extends Phaser.State {
 
 
   setupPlayer(){
-    // this.player = this.add.sprite(100,this.world.height/2, 'player');
-    // this.physics.enable(this.player, Phaser.Physics.ARCADE);
-    // this.player.data.speed = 1000;
-    // this.player.body.setSize(50, 20, 7, 20);
 
     this.player = new Player(this.game, 100, this.world.height/2, 'tico-atlas');
     this.player.body.setSize(120, 230, 50, 100);
@@ -592,26 +577,6 @@ class GameState extends Phaser.State {
     this.player.animations.play('stand');
   }
 
-  // setupExplosions(){
-  //   this.explosionPool = this.add.group();
-  //   this.explosionPool.enableBody = true;
-  //   this.explosionPool.physicsBodyType = Phaser.Physics.ARCADE;
-  //   this.explosionPool.setAll('anchor.x', 0.5);
-  //   this.explosionPool.setAll('anchor.y', 0.5);
-  //   this.explosionPool.forEach(explosion => {
-  //     this.explosionPool.animations.add('boom');
-  //   });
-  // }
-  // explode(sprite) {
-  //   if (this.explosionPool.countDead() === 0) {
-  //     return;
-  //   }
-  //   const explosion = this.explosionPool.getFirstExists(false);
-  //   explosion.reset(sprite.x, sprite.y);
-  //   explosion.play('boom', 15, false, true);
-  //   explosion.body.velocity.x = sprite.body.velocity.x;
-  //   explosion.body.velocity.y = sprite.body.velocity.y;
-  // }
   checkCollisions(){
 
     if (this.p2Immume === false) {
@@ -749,24 +714,41 @@ class GameState extends Phaser.State {
     this.flamethrowerPickupPool.destroy();
     this.icywindPickupPool.destroy();
 
+    this.player.body.velocity.y = 0;
+    this.playerTwo.body.velocity.y = 0;
+
     this.setupPlay();
   }
 
   setupPlay() {
-    this.start = this.add.button(this.game.width/2, 709, 'play', this.startClick, this);
+    this.start = this.add.button(this.game.width/2, 800, 'replay', this.startClick, this);
     this.start.anchor.setTo(0.5,0.5);
     if (this.healthPlayer === 0) {
-        console.log('ICEBOI WINZ');
+        this.playerTwo.y = 300;
+        this.playerTwo.x = this.world.width/2;
+        this.endingText = this.add.text(this.world.width/2, this.world.height/2 + 100, `3`,{font: `100px Cubano`, fill: `#FFFFFF`, align: `center`});
+        this.endingText.anchor.setTo(0.5, 0.5);
+        this.endingText.text = `Tutti Frutti won!`;
+        this.playerTwo.scale.setTo(1.2, 1.2);
+        this.playerTwo.body.velocity.y = 0;
     }
     if (this.healthPlayerTwo === 0) {
-        console.log('TACOBOI WINZ');
+      this.player.y = 300;
+      this.player.x = this.world.width/2;
+      this.endingText = this.add.text(this.world.width/2, this.world.height/2 + 100, `3`,{font: `100px Cubano`, fill: `#FFFFFF`, align: `center`});
+      this.endingText.anchor.setTo(0.5, 0.5);
+      this.player.scale.setTo(1.2, 1.2);
+      this.endingText.text = `Tico Taco won!`;
+      this.playerTwo.body.velocity.y = 0;
     }
   }
+
   startClick() {
-    //this.bgSound.play();
+    this.bgSound.stop();
     this.setupGlobals();
     this.setupSpecialGroups();
     this.state.start(`GameState`);
+    this.scoreText.destroy();
   }
 
 }
