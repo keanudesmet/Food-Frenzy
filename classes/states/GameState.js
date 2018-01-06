@@ -217,6 +217,7 @@ class GameState extends Phaser.State {
     this.icyWindSound = this.add.audio(`icywind`);
     this.powerupSound = this.add.audio(`powerup`);
     this.bgSound = this.add.audio(`bgm`);
+    this.bgSound.stop();
     this.bgSound.play();
   }
 
@@ -315,8 +316,8 @@ class GameState extends Phaser.State {
   }
 
   setupSpawnSpecials() {
-    this.time.events.add(Phaser.Timer.SECOND * this.game.rnd.integerInRange(7, 15), this.spawnSpecial, this);
-    this.time.events.add(Phaser.Timer.SECOND * this.game.rnd.integerInRange(7, 15), this.spawnSpecialTwo, this);
+    this.time.events.add(Phaser.Timer.SECOND * this.game.rnd.integerInRange(10, 15), this.spawnSpecial, this);
+    this.time.events.add(Phaser.Timer.SECOND * this.game.rnd.integerInRange(10, 15), this.spawnSpecialTwo, this);
     this.time.events.add(Phaser.Timer.SECOND * 15, this.setupSpawnSpecials, this);
 
   }
@@ -340,7 +341,7 @@ class GameState extends Phaser.State {
 
     const bullet = this.icywindPickupPool.getFirstExists(false);
     // Reset (revive) the sprite and place it in a new location
-    bullet.reset(this.world.width - 190, this.game.rnd.integerInRange(100, this.world.height - 100));
+    bullet.reset(this.world.width - 100, this.game.rnd.integerInRange(100, this.world.height - 100));
   }
 
   render() {
@@ -372,7 +373,7 @@ class GameState extends Phaser.State {
     this.add.existing(this.player);
 
 
-    this.playerTwo = new Player(this.game,this.world.width - 150, this.world.height/2, 'tutti-atlas');
+    this.playerTwo = new Player(this.game,this.world.width - 100, this.world.height/2, 'tutti-atlas');
     this.playerTwo.body.setSize(120, 230, 50, 100);
     this.playerTwo.scale.setTo(0.6, 0.6);
 
