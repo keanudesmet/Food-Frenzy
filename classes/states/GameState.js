@@ -530,22 +530,13 @@ class GameState extends Phaser.State {
 
   freezePlayerOne() {
     this.game.arduinoPlugin.coldAirBool = true;
-    console.log(this.game.arduinoPlugin.coldAirBool);
-    console.log('froze to death');
     this.playerOneFreeze = true;
     this.pTwoSpecialAvailable = false;
     this.game.arduinoPlugin.blueLedBool = false;
     this.player.animations.play(`frozen`);
-    console.log(this.game.arduinoPlugin.blueLedBool);
-    //this.showFreezeTimer();
     this.icyWindSound.play();
     this.time.events.add(Phaser.Timer.SECOND * 1.5, this.fadeFreeze, this);
-    //this.time.events.add(Phaser.Timer.SECOND * 5, this.resetPTwoSpecialAttack, this);
   }
-
-  // showFreezeTimer() {
-  //
-  // }
 
   fadeFreeze() {
     this.game.arduinoPlugin.coldAirBool = false;

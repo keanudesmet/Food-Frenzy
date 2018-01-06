@@ -10,7 +10,7 @@ class Intro extends Phaser.State {
     this.sea = this.add.tileSprite(0, 0, this.world.width, this.world.height, `bg-menu`);
   }
   setupPlay() {
-    this.start = this.add.button(this.game.width/2, 709, 'play', this.startClick, this);
+    this.start = this.add.button(this.game.width/2, 580, 'play', this.startClick, this);
     this.start.anchor.setTo(0.5,0.5);
   }
   startClick() {

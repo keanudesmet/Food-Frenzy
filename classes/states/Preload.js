@@ -24,7 +24,7 @@ class Preload extends Phaser.State {
       //this.load.bitmapFont(`roadfont`, `assets/road_fighter_font.png`, `assets/road_fighter_font.fnt`);
 
       this.load.image(`bg-menu`, `assets/images/bg-menu.jpg`);
-      this.load.image(`play`, `assets/images/play.jpg`);
+      this.load.image(`play`, `assets/images/play.png`);
       this.load.image(`bg2`, `assets/images/8.jpg`);
       this.load.image(`bullet`, `assets/images/taco.png`);
       this.load.image(`icecream-fire`, `assets/images/icecream-shoot.png`);
