@@ -1,17 +1,7 @@
 const Player = require('../objects/Player');
 
 class GameState extends Phaser.State {
-  preload() {
-    // this.load.image(`sea`, `assets/images/sea.png`);
-    // this.load.image(`bullet`, `assets/images/taco.png`);
-    // this.load.spritesheet('greenEnemy', 'assets/images/enemy.png', 32, 32);
-    // this.load.spritesheet('explosion', 'assets/images/explosion.png', 32, 32);
-    // //this.load.spritesheet('player', 'assets/images/player.png', 200, 235);
-    // this.load.spritesheet('player', 'assets/images/ticotaco-walk.png', 252, 254);
-    // //this.load.image(`player`, `assets/images/ticotaco.png`);
-    // this.load.image(`playerTwo`, `assets/images/tuttifrutti.png`);
-    // this.load.image(`heart`, `assets/images/heart.png`);
-  }
+
   create() {
 
     this.setupBackground();
@@ -19,7 +9,6 @@ class GameState extends Phaser.State {
     this.setupHealth();
     this.setupTacos();
     this.setupIcecream();
-    this.setupFire();
     this.setupGlobals();
     this.setupSounds();
     this.setupArduino();
@@ -531,24 +520,6 @@ class GameState extends Phaser.State {
     this.player.animations.play('stand');
   }
 
-  setupFire() {
-    this.nextFireAt = 0;
-    this.fireDelay = 5000;
-
-    // this.firePool = this.add.group();
-    // this.firePool.enableBody = true;
-    // this.firePool.physicsBodyType = Phaser.Physics.ARCADE;
-    // // Add 100 'bullet' sprites in the group.
-    // this.firePool.createMultiple(200, 'bullet');
-    // this.firePool.setAll('anchor.x', 0.5);
-    // this.firePool.setAll('anchor.y', 0.5);
-    // // Automatically kill the bullet sprites when they go out of bounds
-    // this.firePool.setAll('outOfBoundsKill', true);
-    // this.firePool.setAll('checkWorldBounds', true);
-
-
-  }
-
   loadFire() {
     this.playerOneFreeze = true;
     this.time.events.add(Phaser.Timer.SECOND * 0.4, this.breathFire, this);
@@ -575,7 +546,6 @@ class GameState extends Phaser.State {
   fadeFire() {
     this.game.arduinoPlugin.hotAirBool = false;
     this.firePool.destroy();
-    this.setupFire();
     this.player.animations.play('stand');
   }
 
