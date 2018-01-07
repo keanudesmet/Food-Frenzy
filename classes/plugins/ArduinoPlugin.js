@@ -196,21 +196,16 @@ class ArduinoPlugin extends Phaser.Plugin {
 
 
       if (this.hotAirBool === true) {
-        console.log(`bam`);
         this.hotAir.on();
       }
       if(this.hotAirBool === false) {
-        console.log(`flop`);
-
         this.hotAir.off();
       }
 
       if (this.coldAirBool === true) {
-        console.log(`bam`);
         this.coldAir.on();
       }
       if(this.coldAirBool === false) {
-        console.log(`bam`);
         this.coldAir.off();
       }
 

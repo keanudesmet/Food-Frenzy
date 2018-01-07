@@ -250,53 +250,54 @@ class GameState extends Phaser.State {
       }
     });
 
-    this.game.arduinoPlugin.triggerWalkUp.add(() => {
-      console.log('TRIGGER WALKUP');
-      if (this.playerOneFreeze === false) {
-        this.player.body.velocity.y = -this.player.data.speed;
-        if (this.shootAnim.isPlaying)
-        {
-          return;
-        } else {
-          this.player.animations.play(`walk`);
-        }
-      }
-    });
-
-    this.game.arduinoPlugin.triggerWalkDown.add(() => {
-      //console.log(this.playerOneFreeze);
-      if (this.playerOneFreeze === false) {
-        this.player.body.velocity.y = this.player.data.speed;
-        if (this.shootAnim.isPlaying)
-        {
-          return;
-        } else {
-          this.player.animations.play(`walk`);
-        }
-      }
-    });
-
-    this.game.arduinoPlugin.triggerWalkUpTwo.add(() => {
-      console.log('TRIGGER WALKUP2');
-      this.playerTwo.body.velocity.y = -this.playerTwo.data.speed;
-      if (this.shootAnimTwo.isPlaying)
-        {
-          return;
-        } else {
-          this.playerTwo.animations.play(`walk`);
-        }
-    });
-
-    this.game.arduinoPlugin.triggerWalkDownTwo.add(() => {
-      console.log('TRIGGER WALKUP2');
-      this.playerTwo.body.velocity.y = this.playerTwo.data.speed;
-      if (this.shootAnimTwo.isPlaying)
-        {
-          return;
-        } else {
-          this.playerTwo.animations.play(`walk`);
-        }
-    });
+    // this.game.arduinoPlugin.triggerWalkUp.add(() => {
+    //   console.log('TRIGGER WALKUP');
+    //   if (this.playerOneFreeze === false) {
+    //     this.player.body.velocity.y = -this.player.data.speed;
+    //     if (this.shootAnim.isPlaying)
+    //     {
+    //       return;
+    //     } else {
+    //       this.player.animations.play(`walk`);
+    //     }
+    //   }
+    // });
+    //
+    // this.game.arduinoPlugin.triggerWalkDown.add(() => {
+    //   //console.log(this.playerOneFreeze);
+    //   if (this.playerOneFreeze === false) {
+    //     this.player.body.velocity.y = this.player.data.speed;
+    //     if (this.shootAnim.isPlaying)
+    //     {
+    //       return;
+    //     } else {
+    //       this.player.animations.play(`walk`);
+    //     }
+    //   }
+    // });
+    //
+    // this.game.arduinoPlugin.triggerWalkUpTwo.add(() => {
+    //   console.log('TRIGGER WALKUP2');
+    //   this.playerTwo.body.velocity.y = -this.playerTwo.data.speed;
+    //   if (this.shootAnimTwo.isPlaying)
+    //     {
+    //       return;
+    //     } else {
+    //       this.playerTwo.animations.play(`walk`);
+    //     }
+    // });
+    //
+    // this.game.arduinoPlugin.triggerWalkDownTwo.add(() => {
+    //   console.log('TRIGGER WALKUP2');
+    //   this.playerTwo.body.velocity.y = this.playerTwo.data.speed;
+    //   if (this.shootAnimTwo.isPlaying)
+    //     {
+    //       return;
+    //     } else {
+    //       console.log('walk');
+    //       this.playerTwo.animations.play(`walk`);
+    //     }
+    // });
   }
 
   setupSpecialGroups() {
@@ -623,7 +624,7 @@ class GameState extends Phaser.State {
     this.playerTwo.body.velocity.y = 0;
     this.playerTwo.body.collideWorldBounds = true;
 
-    if (this.cursors.up.isDown) {
+    if (this.cursors.up.isDown || this.game.arduinoPlugin.walkUpBoolTwo === true) {
       this.playerTwo.body.velocity.y = -this.playerTwo.data.speed;
       if (this.shootAnimTwo.isPlaying)
         {
@@ -631,7 +632,7 @@ class GameState extends Phaser.State {
         } else {
           this.playerTwo.animations.play(`walk`);
         }
-    } else if (this.cursors.down.isDown) {
+    } else if (this.cursors.down.isDown || this.game.arduinoPlugin.walkDownBoolTwo === true) {
       this.playerTwo.body.velocity.y = this.playerTwo.data.speed;
       if (this.shootAnimTwo.isPlaying)
         {
@@ -665,7 +666,7 @@ class GameState extends Phaser.State {
 
     if (this.playerOneFreeze === false) {
 
-      if (this.input.keyboard.isDown(Phaser.Keyboard.Z)) {
+      if (this.input.keyboard.isDown(Phaser.Keyboard.Z) || this.game.arduinoPlugin.walkUpBool === true) {
         this.player.body.velocity.y = -this.player.data.speed;
         if (this.shootAnim.isPlaying)
           {
@@ -674,7 +675,7 @@ class GameState extends Phaser.State {
             this.player.animations.play(`walk`);
           }
 
-      } else if (this.input.keyboard.isDown(Phaser.Keyboard.S)) {
+      } else if (this.input.keyboard.isDown(Phaser.Keyboard.S) || this.game.arduinoPlugin.walkDownBool === true) {
         this.player.body.velocity.y = this.player.data.speed;
         if (this.shootAnim.isPlaying)
           {
