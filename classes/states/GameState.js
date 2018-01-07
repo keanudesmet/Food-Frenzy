@@ -45,7 +45,7 @@ class GameState extends Phaser.State {
       this.playerTwo.animations.play('stand');
     }
 
-    this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    //this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
   }
 
   playerHit(player, icecream){
@@ -218,7 +218,7 @@ class GameState extends Phaser.State {
     this.powerupSound = this.add.audio(`powerup`);
     this.bgSound = this.add.audio(`bgm`);
     this.bgSound.stop();
-    //this.bgSound.play();
+    this.bgSound.play();
   }
 
   setupArduino() {
