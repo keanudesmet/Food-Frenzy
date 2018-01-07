@@ -212,34 +212,6 @@ class ArduinoPlugin extends Phaser.Plugin {
     };
 
 
-
-
-    //
-    // if (this.joystick !== undefined) {
-    //
-    //   if (this.joystick.y < -0.7) {
-    //     console.log('omhoog');
-    //     this.triggerWalkUp.dispatch();
-    //   }
-    //   if (this.joystick.y > 0.7) {
-    //     console.log('beneden');
-    //     this.triggerWalkDown.dispatch();
-    //   }
-    //
-    //   if (this.joystickTwo.y < -0.7) {
-    //     console.log('omhoog2');
-    //     this.triggerWalkUpTwo.dispatch();
-    //   }
-    //   if (this.joystickTwo.y > 0.7) {
-    //     console.log('beneden2');
-    //     this.triggerWalkDownTwo.dispatch();
-    //   }
-    //
-    // } else {
-    //   console.log('BOARD NOT LOADED');
-    // }
-
-
   }
 }
 
