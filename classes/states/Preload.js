@@ -22,7 +22,7 @@ class Preload extends Phaser.State {
       this.load.image(`play`, `assets/images/play.png`);
       this.load.image(`replay`, `assets/images/replay.png`);
       this.load.image(`bg2`, `assets/images/8.jpg`);
-      this.load.image(`bullet`, `assets/images/taco.png`);
+      this.load.image(`bullet`, `assets/images/taco2.png`);
       this.load.image(`icecream-fire`, `assets/images/icecream-shoot.png`);
       this.load.spritesheet(`flamethrower`, `assets/images/flamethrower.png`,1712 ,162);
       this.load.image(`playerTwo`, `assets/images/tuttifrutti.png`);
