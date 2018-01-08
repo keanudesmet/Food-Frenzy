@@ -161,7 +161,7 @@ class GameState extends Phaser.State {
     this.pOneSpecialAvailable = true;
     this.pTwoSpecialAvailable = true;
     this.gameEnded = false;
-    this.gameStarted = true;
+    this.gameStarted = false;
     this.playerOneFreeze = false;
     this.yVelocity = 0;
 
@@ -172,6 +172,8 @@ class GameState extends Phaser.State {
   }
 
   setupCountdown() {
+    this.game.arduinoPlugin.gameRunning = true;
+
     this.counter = 0;
     if (this.counter === 0) {
       this.scoreText = this.add.text(this.world.width/2, this.world.height/2, `3`,{font: `200px Cubano`, fill: `#FFFFFF`, align: `center`});
@@ -184,6 +186,8 @@ class GameState extends Phaser.State {
 
   updateCounter() {
     this.counter++;
+
+    console.log(this.counter);
 
     if (this.counter === 1) {
       this.scoreText.text = `2`;
@@ -731,10 +735,14 @@ class GameState extends Phaser.State {
     this.endingText.anchor.setTo(0.5, 0.5);
     this.endingText.text = ``;
 
+    this.game.arduinoPlugin.gameRunning = false;
+
     this.setupPlay();
   }
 
   setupPlay() {
+
+
     if (this.healthPlayer === 0) {
         this.playerTwo.y = 300;
         this.playerTwo.x = this.world.width/2;
@@ -749,6 +757,18 @@ class GameState extends Phaser.State {
       this.endingText.setText(`Tico Taco won!`);
       this.playerTwo.body.velocity.y = 0;
     }
+
+    this.time.events.add(Phaser.Timer.SECOND * 15, this.autoRestart, this);
+
+  }
+
+  autoRestart() {
+    this.bgSound.stop();
+    this.bgSound.destroy();
+    this.setupGlobals();
+    this.setupSpecialGroups();
+    this.scoreText.destroy();
+    this.state.start(`Intro`);
   }
 
   startClick() {

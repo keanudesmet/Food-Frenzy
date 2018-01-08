@@ -23,6 +23,8 @@ class ArduinoPlugin extends Phaser.Plugin {
     console.log('plugin created');
     this.board = new five.Board();
 
+    this.triggerRestart = new Phaser.Signal();
+
     this.triggerTaco = new Phaser.Signal();
     this.triggerFlamethrower = new Phaser.Signal();
     this.triggerIceCream = new Phaser.Signal();
@@ -31,6 +33,8 @@ class ArduinoPlugin extends Phaser.Plugin {
     this.triggerWalkDown = new Phaser.Signal();
     this.triggerWalkUpTwo = new Phaser.Signal();
     this.triggerWalkDownTwo = new Phaser.Signal();
+
+    this.gameRunning = false;
 
     this.walkUpBool = false;
     this.walkDownBool = false;
@@ -94,21 +98,33 @@ class ArduinoPlugin extends Phaser.Plugin {
       taco.on("down", (value) => {
         this.triggerTaco.dispatch();
         //console.log(this.triggerTaco);
+        if (this.gameRunning === false) {
+          this.triggerRestart.dispatch();
+        }
       });
 
       flamethrower.on("down", (value) => {
         console.log('flamethrower');
         this.triggerFlamethrower.dispatch();
+        if (this.gameRunning === false) {
+          this.triggerRestart.dispatch();
+        }
       });
 
       iceCream.on("down", (value) => {
         console.log('icec');
         this.triggerIceCream.dispatch();
+        if (this.gameRunning === false) {
+          this.triggerRestart.dispatch();
+        }
       });
 
       icyWind.on("down", (value) => {
         console.log('icywind1');
         this.triggerIcyWind.dispatch();
+        if (this.gameRunning === false) {
+          this.triggerRestart.dispatch();
+        }
       });
 
       walkUp.on("down", (value) => {

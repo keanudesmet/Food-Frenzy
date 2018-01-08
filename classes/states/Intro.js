@@ -16,21 +16,15 @@ class Intro extends Phaser.State {
   }
   setupArduino() {
 
-    this.game.arduinoPlugin.triggerTaco.add(() => {
-      this.state.start(`GameState`);
-    });
+      this.game.arduinoPlugin.triggerRestart.add(() => {
+        this.state.start(`GameState`);
+      });
 
-    this.game.arduinoPlugin.triggerFlamethrower.add(() => {
-      this.state.start(`GameState`);
-    });
+      this.game.arduinoPlugin.hotAirBool = false;
+      this.game.arduinoPlugin.coldAirBool = false;
+      this.game.arduinoPlugin.blueLedBool = true;
+      this.game.arduinoPlugin.redLedBool = true;
 
-    this.game.arduinoPlugin.triggerIceCream.add(() => {
-      this.state.start(`GameState`);
-    });
-
-    this.game.arduinoPlugin.triggerIcyWind.add(() => {
-      this.state.start(`GameState`);
-    });
   }
   setupPlay() {
     this.start = this.add.button(this.game.width/2, this.bg.height/100 *55, 'play', this.startClick, this);
@@ -38,6 +32,7 @@ class Intro extends Phaser.State {
   }
   startClick() {
     //this.bgSound.play();
+    console.log(this.game.arduinoPlugin.gameRunning);
     this.state.start(`GameState`);
   }
 
